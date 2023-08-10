@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Website</title>
+    <link href="css/styles.css" type="text/css" rel="stylesheet"/>
+
+</head>
+
+<body>
+<main>
+    <div>
+        <h1>Here you can create a new todo item</h1>
+        <a href="index.html">Back to front page</a>
+        <div>
+            <div>
+                <label for="title">Todo title:</label>
+                <input type="text" id="title" name="title">
+                <br>
+                <label for="description">Description:</label>
+                <input type="text" id="description" name="description"/>
+                <br>
+                <label for="assignee">Assignee:</label>
+                <input type="text" id="assignee" name="assignee"/>
+                <br>
+<!--                <input type="submit" value="Submit">-->
+                <button onclick="submitForm()">Submit</button>
+            </div>
+            <p id="result"></p>
+
+        </div>
+    </div>
+
+
+</main>
+<script>
+    var result = document.getElementById("result");
+
+    function submitForm() {
+        let title = document.getElementById("title").value;
+        let desc = document.getElementById("description").value;
+        let ass = document.getElementById("assignee").value;
+        let args = 'title=' + title + '&description='+ desc + '&assignee=' + ass;
+        let xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("POST", "http://localhost:8001/api/todos", false); // false for synchronous request
+        xmlHttp.send(args);
+        let response = xmlHttp.responseText;
+        result.innerHTML = "<b>Submitted:"+response+" </b>";
+    }
+
+</script>
+</body>

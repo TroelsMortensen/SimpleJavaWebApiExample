@@ -12,11 +12,10 @@ public class Todo implements Serializable {
     public Todo() {
     }
 
-    public Todo(int id, String title, String description, boolean isCompleted, String assigneeName) {
-        this.id = id;
+    public Todo(String title, String description,String assigneeName) {
         this.title = title;
         this.description = description;
-        this.isCompleted = isCompleted;
+        this.isCompleted = false;
         this.assigneeName = assigneeName;
     }
 

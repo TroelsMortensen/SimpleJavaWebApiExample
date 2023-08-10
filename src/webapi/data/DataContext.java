@@ -8,13 +8,44 @@ import java.util.List;
 
 public class DataContext {
 
-    private List<Todo> todos = new ArrayList<>(Arrays.asList(
-       new Todo(1, "Mow lawn", "Must be done today", false, "Troels"),
-       new Todo(2, "Do dishes", "It's a huge mess in the kitchen", false, "Anne"),
-       new Todo(3, "Walk dog", "He gotta get sniffin' stuff", false, "Troels"),
-       new Todo(4, "Brush teeth", "Pearly whites", true, "Troels")
-    ));
+    public DataContext() {
+        generateExampleData();
+    }
+
+    private void generateExampleData() {
+        Todo t1 = new Todo("Mow lawn", "Must be done today", "Troels");
+        Todo t2 = new Todo("Do dishes", "It's a huge mess in the kitchen", "Anne");
+        Todo t3 = new Todo("Walk dog", "He gotta get sniffin' stuff", "Troels");
+        Todo t4 = new Todo("Brush teeth", "Pearly whites", "Troels");
+        t1.setId(1);
+        t2.setId(2);
+        t2.setCompleted(true);
+        t3.setId(3);
+        t4.setId(4);
+        todos.add(t1);
+        todos.add(t2);
+        todos.add(t3);
+        todos.add(t4);
+    }
+
+    private final List<Todo> todos = new ArrayList<>();
+
     public List<Todo> getTodos() {
         return todos;
+    }
+
+    public void addTodo(Todo newTodo) {
+        int newId = calcNewId(newTodo);
+        newTodo.setId(newId);
+        todos.add(newTodo);
+    }
+
+    private int calcNewId(Todo newTodo) {
+        int newId = 0;
+        for (Todo todo : todos) {
+            if (todo.getId() > newId) newId = todo.getId();
+        }
+        newId++;
+        return newId;
     }
 }

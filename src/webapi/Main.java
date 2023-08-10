@@ -18,6 +18,6 @@ public class Main {
         server.createContext("/api/todos", new TodosHandler(context));
         server.setExecutor(Executors.newFixedThreadPool(10));
         server.start();
-        System.out.println("Started..");
+        System.out.println("Server started..");
     }
 }
