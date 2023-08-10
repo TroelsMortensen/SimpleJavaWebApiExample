@@ -3,7 +3,6 @@ package webapi.data;
 import webapi.data.entities.Todo;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class DataContext {
@@ -35,15 +34,17 @@ public class DataContext {
     }
 
     public void addTodo(Todo newTodo) {
-        int newId = calcNewId(newTodo);
+        int newId = calcNewId();
         newTodo.setId(newId);
         todos.add(newTodo);
     }
 
-    private int calcNewId(Todo newTodo) {
+    private int calcNewId() {
         int newId = 0;
         for (Todo todo : todos) {
-            if (todo.getId() > newId) newId = todo.getId();
+            if (todo.getId() > newId) {
+                newId = todo.getId();
+            }
         }
         newId++;
         return newId;

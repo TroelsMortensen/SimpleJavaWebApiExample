@@ -7,17 +7,24 @@ import webapi.server.TodosHandler;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.concurrent.Executors;
 
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        DataContext context = new DataContext();
+        System.out.println("Starting server..");
+
         HttpServer server = HttpServer.create(new InetSocketAddress("localhost", 8001), 0);
+        addHandlers(server);
+
+        server.setExecutor(null);
+        server.start();
+
+        System.out.println("Server started at http://localhost:8001/pages/index.html !");
+    }
+
+    private static void addHandlers(HttpServer server) {
+        DataContext context = new DataContext();
         server.createContext("/pages", new PageProvider());
         server.createContext("/api/todos", new TodosHandler(context));
-        server.setExecutor(Executors.newFixedThreadPool(10));
-        server.start();
-        System.out.println("Server started..");
     }
 }

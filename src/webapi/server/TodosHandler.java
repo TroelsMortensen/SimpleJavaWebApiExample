@@ -7,80 +7,75 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 import webapi.data.DataContext;
 import webapi.data.entities.Todo;
 
-import java.beans.XMLDecoder;
-import java.beans.XMLEncoder;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
 public class TodosHandler implements HttpHandler {
 
-    private DataContext context;
+    private final DataContext dataContext;
 
     public TodosHandler(DataContext context) {
-        this.context = context;
+        this.dataContext = context;
     }
 
     @Override
     public void handle(HttpExchange exchange) {
         String requestMethod = exchange.getRequestMethod();
-        switch (requestMethod){
-            case "GET" : handleGET(exchange); break;
-            case "POST" : handlePOST(exchange); break;
-            default: throw new RuntimeException("Error here");
+        switch (requestMethod) {
+            case "GET" -> handleGET(exchange);
+            case "POST" -> handlePOST(exchange);
+            default -> throw new RuntimeException("Error here");
         }
 
+    }
+
+    private void handleGET(HttpExchange exchange) {
+        List<Todo> todos = dataContext.getTodos();
+        String todosAsXml = serializeToXML(todos);
+        returnDataToClient(exchange, todosAsXml);
     }
 
     private void handlePOST(HttpExchange exchange) {
         try {
-            String argsAsString = new String(exchange.getRequestBody().readAllBytes());
-            String[] argsInArray = argsAsString.split("&");
+            String[] argsInArray = parseArgsFromRequestBody(exchange);
 
-            String title = argsInArray[0].split("=")[1];
-            String description = argsInArray[1].split("=")[1];
-            String assignee = argsInArray[2].split("=")[1];
-            Todo newTodo = new Todo(title, description, assignee);
-            context.addTodo(newTodo);
+            Todo newTodo = createTodoItemFromArgs(argsInArray);
 
-            System.out.println("Todo submitted");
+            dataContext.addTodo(newTodo);
 
-            try {
-                OutputStream outputStream = exchange.getResponseBody();
-                String response = "Nice";
-                exchange.sendResponseHeaders(200, response.length());
-                outputStream.write(response.getBytes());
-                outputStream.flush();
-                outputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            sendResponseBack(exchange, "Created!");
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
-        int stopher = 0;
     }
 
-    private void handleGET(HttpExchange exchange) {
-        // todo match actions and path
-        List<Todo> todos = getDataFromContext();
-        String todosAsXml = serializeToXML(todos);
-//        test(todosAsXml);
-        returnDataToClient(exchange, todosAsXml);
+    private void sendResponseBack(HttpExchange exchange, String response) throws IOException {
+        OutputStream outputStream = exchange.getResponseBody();
+        exchange.sendResponseHeaders(200, response.length());
+        outputStream.write(response.getBytes());
+        outputStream.flush();
+        outputStream.close();
     }
 
-    private void test(String todosAsXml) {
-        XMLDecoder d = new XMLDecoder(new ByteArrayInputStream(todosAsXml.getBytes()));
-        List<Todo> obj = (List<Todo>) d.readObject();
-        d.close();
-        int stopher = 0;
+    private String[] parseArgsFromRequestBody(HttpExchange exchange) throws IOException {
+        String argsAsString = new String(exchange.getRequestBody().readAllBytes());
+        String[] argsInArray = argsAsString.split("&");
+        return argsInArray;
     }
+
+    private Todo createTodoItemFromArgs(String[] argsInArray) {
+        String title = argsInArray[0].split("=")[1];
+        String description = argsInArray[1].split("=")[1];
+        String assignee = argsInArray[2].split("=")[1];
+        Todo newTodo = new Todo(title, description, assignee);
+        return newTodo;
+    }
+
 
     private void returnDataToClient(HttpExchange exchange, String todosAsXml) {
-        OutputStream outputStream = exchange.getResponseBody();
         try {
+            OutputStream outputStream = exchange.getResponseBody();
             exchange.sendResponseHeaders(200, todosAsXml.length());
             outputStream.write(todosAsXml.getBytes());
             outputStream.flush();
@@ -93,13 +88,11 @@ public class TodosHandler implements HttpHandler {
     private String serializeToXML(List<Todo> todos) {
         XStream xstream = new XStream(new DomDriver());
 
-        // rename "webapi.data.entities.Todo" to "todo"
+        // renaming "<webapi.data.entities.Todo>" to "<todo>"
         xstream.alias("todo", Todo.class);
         String xml = xstream.toXML(todos);
         return xml;
     }
 
-    private List<Todo> getDataFromContext() {
-        return context.getTodos();
-    }
+
 }
