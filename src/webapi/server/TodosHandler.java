@@ -54,7 +54,7 @@ public class TodosHandler implements HttpHandler {
     private String serializeToXML(List<Todo> todos) {
         XStream xstream = new XStream(new DomDriver());
 
-        // rename webapi.data.entities.Todo to todo
+        // rename "webapi.data.entities.Todo" to "todo"
         xstream.alias("todo", Todo.class);
         String xml = xstream.toXML(todos);
         return xml;
