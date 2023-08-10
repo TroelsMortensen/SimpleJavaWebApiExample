@@ -19,7 +19,7 @@ public class Main {
         server.setExecutor(null);
         server.start();
 
-        System.out.println("Server started at http://localhost:8001/pages/index.html !");
+        System.out.println("Server started at http://localhost:8001/pages/index.html !  <--- click me to open in browser ;)");
     }
 
     private static void addHandlers(HttpServer server) {
