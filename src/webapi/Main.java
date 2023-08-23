@@ -15,8 +15,6 @@ public class Main {
 
         HttpServer server = HttpServer.create(new InetSocketAddress("localhost", 8001), 0);
         addHandlers(server);
-
-        server.setExecutor(null);
         server.start();
 
         System.out.println("Server started at http://localhost:8001/pages/index.html !  <--- click me to open in browser ;)");

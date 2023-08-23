@@ -25,12 +25,13 @@ public class TodosHandler implements HttpHandler {
         switch (requestMethod) {
             case "GET" -> handleGET(exchange);
             case "POST" -> handlePOST(exchange);
-            default -> throw new RuntimeException("Error here");
+            default -> throw new RuntimeException("Error here"); // Todo write error back to client
         }
 
     }
 
     private void handleGET(HttpExchange exchange) {
+        // There might be different get methods, or filter arguments. Fix later
         List<Todo> todos = dataContext.getTodos();
         String todosAsXml = serializeToXML(todos);
         returnDataToClient(exchange, todosAsXml);
@@ -59,6 +60,7 @@ public class TodosHandler implements HttpHandler {
     }
 
     private String[] parseArgsFromRequestBody(HttpExchange exchange) throws IOException {
+        // request body in format: title=hello world&description=this is xyz&assignee=7
         String argsAsString = new String(exchange.getRequestBody().readAllBytes());
         String[] argsInArray = argsAsString.split("&");
         return argsInArray;

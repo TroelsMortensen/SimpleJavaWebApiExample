@@ -14,38 +14,48 @@ public class PageProvider implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) {
         String requestMethod = exchange.getRequestMethod();
-        if (!"GET".equals(requestMethod)) {
-            throw new RuntimeException("Problem here");
-        }
+        assertIsGetRequest(requestMethod);
 
-        String resourceName = exchange.getRequestURI().toString().replace("/pages/", "");
+        String resourceName = getResourceName(exchange);
+        String content = loadResourceAsString(resourceName);
+        sendHtmlPageToClient(exchange, content);
 
-        loadAndReturnResource(resourceName, exchange);
     }
 
-    private void loadAndReturnResource(String resourcePath, HttpExchange exchange) {
+    private String getResourceName(HttpExchange exchange) {
+        return exchange.getRequestURI().toString().replace("/pages/", "");
+    }
+
+    private void assertIsGetRequest(String requestMethod) {
+        if (!"GET".equals(requestMethod)) {
+            throw new RuntimeException("Must use GET to interact with pages and page resources");
+            // TODO write error back to client
+        }
+    }
+
+    private String loadResourceAsString(String resourcePath) {
         URL resourceURL = this.getClass().getResource(resourcePath);
         try {
-            OutputStream outputStream = exchange.getResponseBody();
-
-            String indexContent = loadHtmlPage(resourceURL);
-            sendHtmlPageToClient(exchange, outputStream, indexContent);
-
-        } catch (IOException e) {
+            String pageContent = Files.readString(Path.of(resourceURL.toURI()));
+            return pageContent;
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
-        } catch (URISyntaxException e) {
             throw new RuntimeException(e);
+            // TODO write error back to client
         }
     }
 
-    private void sendHtmlPageToClient(HttpExchange exchange, OutputStream outputStream, String indexContent) throws IOException {
-        exchange.sendResponseHeaders(200, indexContent.length());
-        outputStream.write(indexContent.getBytes());
-        outputStream.flush();
-        outputStream.close();
+    private void sendHtmlPageToClient(HttpExchange exchange, String content) {
+        try {
+            OutputStream outputStream = exchange.getResponseBody();
+            exchange.sendResponseHeaders(200, content.length());
+            outputStream.write(content.getBytes());
+            outputStream.flush();
+            outputStream.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+            // TODO write error back to client
+        }
     }
 
-    private String loadHtmlPage(URL resource) throws IOException, URISyntaxException {
-        return Files.readString(Path.of(resource.toURI()));
-    }
 }
