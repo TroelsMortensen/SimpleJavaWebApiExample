@@ -24,9 +24,10 @@ public class Main {
         server = HttpServer.create(new InetSocketAddress("localhost", 8001), 0);
 
         // add handlers
-        server.createContext("/pages", new PageProvider());
-        server.createContext("/api/todos", new TodosHandler(context));
-        server.createContext("/api/users", new UserHandler(context));
+        // it is not strictly necessary with the CorsFixDecorator, but makes development easier, if they can open the website from outside of IntelliJ
+        server.createContext("/pages", new CorsFixDecorator(new PageProvider()));
+        server.createContext("/api/todos", new CorsFixDecorator(new TodosHandler(context)));
+        server.createContext("/api/users", new CorsFixDecorator(new UserHandler(context)));
 
         // start server
         server.start();

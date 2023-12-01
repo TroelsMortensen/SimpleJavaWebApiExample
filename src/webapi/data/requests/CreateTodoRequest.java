@@ -1,4 +1,4 @@
-package webapi.data.entities;
+package webapi.data.requests;
 
 public class CreateTodoRequest {
     private String title;

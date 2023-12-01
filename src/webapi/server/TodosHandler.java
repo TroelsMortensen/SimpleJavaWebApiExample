@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import webapi.data.DataContext;
-import webapi.data.entities.CreateTodoRequest;
+import webapi.data.requests.CreateTodoRequest;
 import webapi.data.entities.Todo;
 
 import java.io.IOException;
