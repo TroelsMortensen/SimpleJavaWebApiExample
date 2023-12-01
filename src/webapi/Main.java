@@ -1,10 +1,9 @@
 package webapi;
 
-import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import webapi.data.DataContext;
 import webapi.server.CorsFixDecorator;
-import webapi.server.PageProvider;
+import webapi.server.ResourceProvider;
 import webapi.server.TodosHandler;
 import webapi.server.UserHandler;
 
@@ -25,7 +24,7 @@ public class Main {
 
         // add handlers
         // it is not strictly necessary with the CorsFixDecorator, but makes development easier, if they can open the website from outside of IntelliJ
-        server.createContext("/pages", new CorsFixDecorator(new PageProvider()));
+        server.createContext("/pages", new CorsFixDecorator(new ResourceProvider()));
         server.createContext("/api/todos", new CorsFixDecorator(new TodosHandler(context)));
         server.createContext("/api/users", new CorsFixDecorator(new UserHandler(context)));
 

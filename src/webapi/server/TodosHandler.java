@@ -47,8 +47,8 @@ public class TodosHandler implements HttpHandler {
 
     private void handlePOST(HttpExchange exchange) {
         try (OutputStream outputStream = exchange.getResponseBody()) {
-            String json = new String(exchange.getRequestBody().readAllBytes());
-            CreateTodoRequest request = new Gson().fromJson(json, CreateTodoRequest.class);
+            String todoAsJson = new String(exchange.getRequestBody().readAllBytes());
+            CreateTodoRequest request = new Gson().fromJson(todoAsJson, CreateTodoRequest.class);
 
             Todo newTodo = new Todo(request.getTitle(), request.getDescription(), request.getAssigneeName());
 
