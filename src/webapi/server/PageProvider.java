@@ -13,27 +13,16 @@ import java.nio.file.Path;
 public class PageProvider implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) {
-        String requestMethod = exchange.getRequestMethod();
-        assertIsGetRequest(requestMethod);
-
-        String resourceName = getResourceName(exchange);
-        String content = loadResourceAsString(resourceName);
+        // request URI could be: pages/index.html. Assuming it is GET
+        String resourceName = exchange.getRequestURI().toString().replace("/pages/", "");
+        String content = readResourceFileToString(resourceName);
         sendHtmlPageToClient(exchange, content);
 
     }
 
-    private String getResourceName(HttpExchange exchange) {
-        return exchange.getRequestURI().toString().replace("/pages/", "");
-    }
 
-    private void assertIsGetRequest(String requestMethod) {
-        if (!"GET".equals(requestMethod)) {
-            throw new RuntimeException("Must use GET to interact with pages and page resources");
-            // TODO write error back to client
-        }
-    }
-
-    private String loadResourceAsString(String resourcePath) {
+    // this method reads a resource, e.g. an html file, or css, or js. Or image...? Maybe not.
+    private String readResourceFileToString(String resourcePath) {
         URL resourceURL = this.getClass().getResource(resourcePath);
         try {
             String pageContent = Files.readString(Path.of(resourceURL.toURI()));

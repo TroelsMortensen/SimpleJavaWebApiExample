@@ -5,11 +5,11 @@ import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
 
-public class CorsFixer implements HttpHandler {
+public class CorsFixDecorator implements HttpHandler {
 
     private final HttpHandler handler;
 
-    public CorsFixer(HttpHandler handler) {
+    public CorsFixDecorator(HttpHandler handler) {
         this.handler = handler;
     }
 
