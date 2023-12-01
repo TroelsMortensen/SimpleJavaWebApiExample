@@ -24,7 +24,6 @@
                 <label for="assignee">Assignee:</label>
                 <input type="text" id="assignee" name="assignee"/>
                 <br>
-<!--                <input type="submit" value="Submit">-->
                 <button onclick="submitForm()">Submit</button>
             </div>
             <p id="result"></p>
@@ -35,7 +34,7 @@
 
 </main>
 <script>
-    var result = document.getElementById("result");
+    const result = document.getElementById("result");
 
     function submitForm() {
         const title = document.getElementById("title").value;
@@ -57,7 +56,7 @@
         xhr.send(todoAsJson);
 
         const response = xhr.responseText;
-        result.innerHTML = "<b>Submitted:"+response+" </b>";
+        result.innerHTML = "<b>Submitted: "+response+" </b>";
     }
 
 </script>

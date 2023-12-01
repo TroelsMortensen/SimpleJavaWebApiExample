@@ -1,11 +1,11 @@
-const xmlHttp = new XMLHttpRequest();
-xmlHttp.open("GET", "http://localhost:8001/api/todos", false); // false to make synchronous request
-xmlHttp.send(null);
+const xhr = new XMLHttpRequest();
+xhr.open("GET", "http://localhost:8001/api/todos", false); // false to make synchronous request
+xhr.send(null);
 
-const fetchedJSON = xmlHttp.responseText; // here I have received my data as JSON
+const fetchedJSON = xhr.responseText; // here I have received my data as JSON
 const todos = JSON.parse(fetchedJSON)
 
-var resultTableHTML = '<table>';
+let resultTableHTML = '<table>';
 {
     resultTableHTML += '<tr><th>id</th><th>title</th><th>description</th><th>status</th><th>assignee</th></tr>';
     for (let i = 0; i < todos.length; i++) {
