@@ -33,6 +33,7 @@ public class Main {
         server.start();
 
         // print out link in console, to be clicked. Will open index page in browser.
+        // alternatively, just straight up open the index.html page in a browser. Should work because CORS fix.
         System.out.println("Server started at http://localhost:8001/pages/index.html !  <--- click me to open in browser ;)");
     }
 }
