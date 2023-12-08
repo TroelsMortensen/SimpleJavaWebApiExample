@@ -28,8 +28,8 @@ public class CorsFixDecorator implements HttpHandler {
          * If sending text/plain, then this decorator and any CORS checks are unnecessary
          */
 
+        exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
         if(exchange.getRequestMethod().equals("OPTIONS")){
-            exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
             exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "*");
             exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "*");
 
@@ -39,6 +39,7 @@ public class CorsFixDecorator implements HttpHandler {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            return;
         }
         handler.handle(exchange);
     }
