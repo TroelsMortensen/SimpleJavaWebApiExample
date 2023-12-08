@@ -26,8 +26,6 @@ public class TodosHandler implements HttpHandler {
             handleGET(exchange);
         } else if ("POST".equals(requestMethod)) {
             handlePOST(exchange);
-        } else {
-            throw new RuntimeException("Error here"); // Todo write error back to client
         }
     }
 
